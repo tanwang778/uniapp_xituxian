@@ -6,13 +6,19 @@ import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import type { BannerItem } from '@/types/home'
 
+//获取轮播图数据
 const bannerList = ref<BannerItem[]>()
 const getHomeBannerData = async () => {
   const res = await getHomeBannerAPI()
   bannerList.value = res.result
 }
+//获取前台分类数据
+const getHomeCategoryData = async () => {
+  const res = await getHomeCategoryData()
+}
 onLoad(() => {
   getHomeBannerData()
+  getHomeCategoryData()
 })
 </script>
 
