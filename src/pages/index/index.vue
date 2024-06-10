@@ -1,38 +1,69 @@
 <script setup lang="ts">
-import { getHomeBannerAPI } from '@/services/home'
+import { getHomeBannerAPI, getHomeCategoryAPI, getHomeHotAPI } from '@/services/home'
 import CustomNavBar from './components/CustomNavBar.vue'
 import CategoryPanel from './components/CategoryPanel.vue'
+import HotPanel from './components/HotPanel.vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
-import type { BannerItem } from '@/types/home'
-
+import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
+import type { XtxGuessInstance } from '@/types/component'
 //获取轮播图数据
-const bannerList = ref<BannerItem[]>()
+const bannerList = ref<BannerItem[]>([])
 const getHomeBannerData = async () => {
   const res = await getHomeBannerAPI()
   bannerList.value = res.result
 }
 //获取前台分类数据
+const categoryList = ref<CategoryItem[]>([])
 const getHomeCategoryData = async () => {
-  const res = await getHomeCategoryData()
+  const res = await getHomeCategoryAPI()
+  categoryList.value = res.result
 }
+
+//获取热门推荐数据数据
+const hotList = ref<HotItem[]>([])
+const getHomeHotData = async () => {
+  const res = await getHomeHotAPI()
+  hotList.value = res.result
+}
+
 onLoad(() => {
   getHomeBannerData()
   getHomeCategoryData()
+  getHomeHotData()
 })
+//获取猜你喜欢组件实例
+const guessRef = ref<XtxGuessInstance>()
+//滚动触底
+const onScrollToLower = () => {
+  // console.log(111)
+  guessRef.value?.getMore()
+}
 </script>
 
 <template>
   <!-- 自定义导航栏 -->
   <CustomNavBar />
-  <!-- 自定义轮播图 -->
-  <XtxSwiper :bannerList="bannerList!" />
-  <!-- 分类 -->
-  <CategoryPanel />
+  <scroll-view @scrolltolower="onScrollToLower" class="scroll_view" scroll-y>
+    <!-- 自定义轮播图 -->
+    <XtxSwiper :list="bannerList" />
+    <!-- 分类 -->
+    <CategoryPanel :list="categoryList" />
+    <!-- 热门推荐 -->
+    <HotPanel :list="hotList" />
+    <!-- 猜你喜欢 -->
+    <XtxGuess ref="guessRef" />
+  </scroll-view>
 </template>
 
 <style lang="scss">
 page {
   background-color: #f7f7f7;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.scroll_view {
+  flex: 1;
 }
 </style>

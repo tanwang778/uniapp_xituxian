@@ -3,7 +3,7 @@ import type { BannerItem } from '@/types/home'
 import { ref } from 'vue'
 //定义props函数
 defineProps<{
-  bannerList: BannerItem[]
+  list: BannerItem[]
 }>()
 const activeIndex = ref(0)
 //当swiper 下标发生变化时触发
@@ -16,7 +16,7 @@ const onChange: UniHelper.SwiperOnChange = (e) => {
 <template>
   <view class="carousel">
     <swiper @change="onChange" :circular="true" :autoplay="false" :interval="3000">
-      <swiper-item v-for="item in bannerList" :key="item.id">
+      <swiper-item v-for="item in list" :key="item.id">
         <navigator :url="item.hrefUrl" hover-class="none" class="navigator">
           <image mode="aspectFill" class="image" :src="item.imgUrl"></image>
         </navigator>
@@ -25,7 +25,7 @@ const onChange: UniHelper.SwiperOnChange = (e) => {
     <!-- 指示点 -->
     <view class="indicator">
       <text
-        v-for="(item, index) in bannerList"
+        v-for="(item, index) in list"
         :key="item.id"
         class="dot"
         :class="{ active: index === activeIndex }"
