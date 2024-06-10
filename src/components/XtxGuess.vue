@@ -9,6 +9,7 @@ const pageParams: Required<PageParams> = {
   page: 1,
   pageSize: 10,
 }
+
 //已结束的标记
 const finish = ref(false)
 //获取猜你喜欢数据
@@ -27,11 +28,18 @@ const getHomeGoodsGuressLikeData = async () => {
     finish.value = true
   }
 }
+//重置数据
+const resetData = () => {
+  pageParams.page = 1
+  guessList.value = []
+  finish.value = false
+}
 onMounted(() => {
   getHomeGoodsGuressLikeData()
 })
 // 暴露方法
 defineExpose({
+  resetData,
   getMore: getHomeGoodsGuressLikeData,
 })
 </script>
