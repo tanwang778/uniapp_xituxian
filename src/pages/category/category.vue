@@ -5,7 +5,7 @@ import type { CategoryTopItem } from '@/types/category'
 import type { BannerItem } from '@/types/home'
 import { onLoad } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
-
+import Pageskeleton from './components/PageSkeleton.vue'
 //获取轮播图数据
 const bannerList = ref<BannerItem[]>([])
 const getBannerData = async () => {
@@ -22,15 +22,16 @@ const getCategoryTopData = async () => {
 }
 //提取当前二级分类数据
 const subCategoryList = computed(() => categoryList.value[activeIndex.value]?.children || [])
+const isFinish = ref(false)
 //页面加载
-onLoad(() => {
-  getBannerData()
-  getCategoryTopData()
+onLoad(async () => {
+  await Promise.all([getBannerData(), getCategoryTopData()])
+  isFinish.value = true
 })
 </script>
 
 <template>
-  <view class="viewport">
+  <view class="viewport" v-if="isFinish">
     <!-- 搜索框 -->
     <view class="search">
       <view class="input">
@@ -81,6 +82,7 @@ onLoad(() => {
       </scroll-view>
     </view>
   </view>
+  <Pageskeleton v-else />
 </template>
 
 <style lang="scss">
