@@ -6,6 +6,7 @@ import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import AddressPanel from './components/AddressPanel.vue'
 import ServicePanel from './components/ServicePanel.vue'
+import PageSkeleton from './components/PageSkeleton.vue'
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 //接收页面参数
@@ -39,101 +40,107 @@ const openPopup = (name: typeof popupName.value) => {
   popupName.value = name
   popup.value!.open!()
 }
-onLoad(() => {
-  getGoodsByIdData()
+const isLoading = ref(false)
+onLoad(async () => {
+  isLoading.value = true
+  await getGoodsByIdData()
+  isLoading.value = false
 })
 </script>
 
 <template>
   <scroll-view scroll-y class="viewport">
-    <!-- 基本信息 -->
-    <view class="goods">
-      <!-- 商品主图 -->
-      <view class="preview">
-        <swiper @change="onChange" circular>
-          <swiper-item v-for="item in goods?.mainPictures" :key="item">
-            <image @tap="onTapImage(item)" mode="aspectFill" :src="item" />
-          </swiper-item>
-        </swiper>
-        <view class="indicator">
-          <text class="current">{{ currentIndex + 1 }}</text>
-          <text class="split">/</text>
-          <text class="total">{{ goods?.mainPictures.length }}</text>
-        </view>
-      </view>
-
-      <!-- 商品简介 -->
-      <view class="meta">
-        <view class="price">
-          <text class="symbol">¥</text>
-          <text class="number">{{ goods?.price }}</text>
-        </view>
-        <view class="name ellipsis">{{ goods?.name }} </view>
-        <view class="desc"> {{ goods?.desc }} </view>
-      </view>
-
-      <!-- 操作面板 -->
-      <view class="action">
-        <view class="item arrow">
-          <text class="label">选择</text>
-          <text class="text ellipsis"> 请选择商品规格 </text>
-        </view>
-        <view @tap="openPopup('address')" class="item arrow">
-          <text class="label">送至</text>
-          <text class="text ellipsis"> 请选择收获地址 </text>
-        </view>
-        <view @tap="openPopup('service')" class="item arrow">
-          <text class="label">服务</text>
-          <text class="text ellipsis"> 无忧退 快速退款 免费包邮 </text>
-        </view>
-      </view>
-    </view>
-
-    <!-- 商品详情 -->
-    <view class="detail panel">
-      <view class="title">
-        <text>详情</text>
-      </view>
-      <view class="content">
-        <view class="properties">
-          <!-- 属性详情 -->
-          <view class="item" v-for="item in goods?.details.properties" :key="item.name">
-            <text class="label">{{ item.name }}</text>
-            <text class="value">{{ item.value }}</text>
+    <PageSkeleton v-if="isLoading" />
+    <template v-else>
+      <!-- 基本信息 -->
+      <view class="goods">
+        <!-- 商品主图 -->
+        <view class="preview">
+          <swiper @change="onChange" circular>
+            <swiper-item v-for="item in goods?.mainPictures" :key="item">
+              <image @tap="onTapImage(item)" mode="aspectFill" :src="item" />
+            </swiper-item>
+          </swiper>
+          <view class="indicator">
+            <text class="current">{{ currentIndex + 1 }}</text>
+            <text class="split">/</text>
+            <text class="total">{{ goods?.mainPictures.length }}</text>
           </view>
         </view>
-        <!-- 图片详情 -->
-        <image
-          v-for="item in goods?.details.pictures"
-          :key="item"
-          mode="widthFix"
-          :src="item"
-        ></image>
-      </view>
-    </view>
 
-    <!-- 同类推荐 -->
-    <view class="similar panel">
-      <view class="title">
-        <text>同类推荐</text>
-      </view>
-      <view class="content">
-        <navigator
-          v-for="item in goods?.similarProducts"
-          :key="item.id"
-          class="goods"
-          hover-class="none"
-          :url="`/pages/goods/goods?id=${item.id}`"
-        >
-          <image class="image" mode="aspectFill" :src="item.picture"></image>
-          <view class="name ellipsis">{{ item.name }}</view>
+        <!-- 商品简介 -->
+        <view class="meta">
           <view class="price">
             <text class="symbol">¥</text>
-            <text class="number">{{ item.price }}</text>
+            <text class="number">{{ goods?.price }}</text>
           </view>
-        </navigator>
+          <view class="name ellipsis">{{ goods?.name }} </view>
+          <view class="desc"> {{ goods?.desc }} </view>
+        </view>
+
+        <!-- 操作面板 -->
+        <view class="action">
+          <view class="item arrow">
+            <text class="label">选择</text>
+            <text class="text ellipsis"> 请选择商品规格 </text>
+          </view>
+          <view @tap="openPopup('address')" class="item arrow">
+            <text class="label">送至</text>
+            <text class="text ellipsis"> 请选择收获地址 </text>
+          </view>
+          <view @tap="openPopup('service')" class="item arrow">
+            <text class="label">服务</text>
+            <text class="text ellipsis"> 无忧退 快速退款 免费包邮 </text>
+          </view>
+        </view>
       </view>
-    </view>
+
+      <!-- 商品详情 -->
+      <view class="detail panel">
+        <view class="title">
+          <text>详情</text>
+        </view>
+        <view class="content">
+          <view class="properties">
+            <!-- 属性详情 -->
+            <view class="item" v-for="item in goods?.details.properties" :key="item.name">
+              <text class="label">{{ item.name }}</text>
+              <text class="value">{{ item.value }}</text>
+            </view>
+          </view>
+          <!-- 图片详情 -->
+          <image
+            v-for="item in goods?.details.pictures"
+            :key="item"
+            mode="widthFix"
+            :src="item"
+          ></image>
+        </view>
+      </view>
+
+      <!-- 同类推荐 -->
+      <view class="similar panel">
+        <view class="title">
+          <text>同类推荐</text>
+        </view>
+        <view class="content">
+          <navigator
+            v-for="item in goods?.similarProducts"
+            :key="item.id"
+            class="goods"
+            hover-class="none"
+            :url="`/pages/goods/goods?id=${item.id}`"
+          >
+            <image class="image" mode="aspectFill" :src="item.picture"></image>
+            <view class="name ellipsis">{{ item.name }}</view>
+            <view class="price">
+              <text class="symbol">¥</text>
+              <text class="number">{{ item.price }}</text>
+            </view>
+          </navigator>
+        </view>
+      </view>
+    </template>
   </scroll-view>
 
   <!-- 用户操作 -->
