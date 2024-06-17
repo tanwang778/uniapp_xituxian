@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { getMemberProfileAPI, putMemberProfileAPI } from '@/services/profile'
 import { useMemberStore } from '@/stores'
-import type { ProfileDetail } from '@/types/member'
+import type { Gender, ProfileDetail } from '@/types/member'
 import { onLoad } from '@dcloudio/uni-app'
+import { on } from 'events'
 import { ref } from 'vue'
 
 // 获取屏幕边界到安全区域距离
@@ -56,14 +57,18 @@ const onSubmit = async () => {
     gender: profile.value?.gender,
     birthday: profile.value?.birthday,
   })
-  console.log(res.result.nickname)
+  console.log(res.result)
 
   //更新store昵称
   memberStore.profile!.nickname = res.result.nickname
   uni.showToast({ title: '保存成功', icon: 'success' })
   setTimeout(() => {
     uni.navigateBack()
-  }, 500)
+  }, 400)
+}
+//选择性别
+const onGenderChange: UniHelper.RadioGroupOnChange = (evt) => {
+  profile.value.gender = evt.detail.value as Gender
 }
 onLoad(() => {
   getMemberProfileData()
@@ -98,7 +103,7 @@ onLoad(() => {
         </view>
         <view class="form-item">
           <text class="label">性别</text>
-          <radio-group>
+          <radio-group @change="onGenderChange">
             <label class="radio">
               <radio value="男" color="#27ba9b" :checked="profile?.gender === '男'" />
               男
