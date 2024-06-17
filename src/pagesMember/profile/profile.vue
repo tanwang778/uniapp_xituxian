@@ -52,10 +52,11 @@ const onAvatarChange = () => {
 }
 //点击保存提交表单
 const onSubmit = async () => {
+  const { nickname, gender, birthday } = profile.value
   const res = await putMemberProfileAPI({
-    nickname: profile.value?.nickname,
-    gender: profile.value?.gender,
-    birthday: profile.value?.birthday,
+    nickname,
+    gender,
+    birthday,
   })
   console.log(res.result)
 
@@ -69,6 +70,16 @@ const onSubmit = async () => {
 //选择性别
 const onGenderChange: UniHelper.RadioGroupOnChange = (evt) => {
   profile.value.gender = evt.detail.value as Gender
+}
+//选择日期
+const onBirthDayChange: UniHelper.DatePickerOnChange = (evt) => {
+  profile.value.birthday = evt.detail.value
+}
+//选择城市
+const onCityChange: UniHelper.RegionPickerOnChange = (evt) => {
+  console.log(evt.detail.value.slice(0, evt.detail.value.length).join(' '))
+
+  // profile.value.fullLocation =
 }
 onLoad(() => {
   getMemberProfileData()
@@ -117,6 +128,7 @@ onLoad(() => {
         <view class="form-item">
           <text class="label">生日</text>
           <picker
+            @change="onBirthDayChange"
             class="picker"
             mode="date"
             start="1900-01-01"
@@ -129,7 +141,12 @@ onLoad(() => {
         </view>
         <view class="form-item">
           <text class="label">城市</text>
-          <picker class="picker" mode="region" :value="profile?.fullLocation?.split(' ')">
+          <picker
+            @change="onCityChange"
+            class="picker"
+            mode="region"
+            :value="profile?.fullLocation?.split(' ')"
+          >
             <view v-if="profile?.fullLocation">{{ profile.fullLocation }}</view>
             <view class="placeholder" v-else>请选择城市</view>
           </picker>
