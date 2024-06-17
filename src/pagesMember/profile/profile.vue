@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { getMemberProfileAPI } from '@/services/profile'
+import { getMemberProfileAPI, putMemberProfileAPI } from '@/services/profile'
+import { useMemberStore } from '@/stores'
 import type { ProfileDetail } from '@/types/member'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
-//获取个人信息
-const profile = ref<ProfileDetail>()
+//获取个人信息 修改个人信息需要初始值
+const profile = ref({} as ProfileDetail)
 const getMemberProfileData = async () => {
   const res = await getMemberProfileAPI()
   profile.value = res.result
-  console.log(profile.value)
 }
+const memberStore = useMemberStore()
 //修改头像
 const onAvatarChange = () => {
   //调用拍照/选择文件
@@ -32,16 +33,13 @@ const onAvatarChange = () => {
         success: (res) => {
           if (res.statusCode === 200) {
             const avatar = JSON.parse(res.data).result.avatar
+            //个人数据页的头像更新
             profile.value!.avatar = avatar
-            uni.showToast({
-              title: '更新成功',
-              icon: 'success',
-            })
+            //store 头像更新
+            memberStore.profile!.avatar = avatar
+            uni.showToast({ title: '更新成功', icon: 'success' })
           } else {
-            uni.showToast({
-              title: '出现错误',
-              icon: 'error',
-            })
+            uni.showToast({ title: '出现错误', icon: 'error' })
           }
         },
         fail: (error) => {},
@@ -50,6 +48,22 @@ const onAvatarChange = () => {
     fail: () => {},
     complete: () => {},
   })
+}
+//点击保存提交表单
+const onSubmit = async () => {
+  const res = await putMemberProfileAPI({
+    nickname: profile.value?.nickname,
+    gender: profile.value?.gender,
+    birthday: profile.value?.birthday,
+  })
+  console.log(res.result.nickname)
+
+  //更新store昵称
+  memberStore.profile!.nickname = res.result.nickname
+  uni.showToast({ title: '保存成功', icon: 'success' })
+  setTimeout(() => {
+    uni.navigateBack()
+  }, 500)
 }
 onLoad(() => {
   getMemberProfileData()
@@ -80,7 +94,7 @@ onLoad(() => {
         </view>
         <view class="form-item">
           <text class="label">昵称</text>
-          <input class="input" type="text" placeholder="请填写昵称" :value="profile?.nickname" />
+          <input class="input" type="text" placeholder="请填写昵称" v-model="profile!.nickname" />
         </view>
         <view class="form-item">
           <text class="label">性别</text>
@@ -121,7 +135,7 @@ onLoad(() => {
         </view>
       </view>
       <!-- 提交按钮 -->
-      <button class="form-button">保 存</button>
+      <button @tap="onSubmit" class="form-button">保 存</button>
     </view>
   </view>
 </template>
