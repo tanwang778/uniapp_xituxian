@@ -3,7 +3,6 @@ import { getMemberProfileAPI, putMemberProfileAPI } from '@/services/profile'
 import { useMemberStore } from '@/stores'
 import type { Gender, ProfileDetail } from '@/types/member'
 import { onLoad } from '@dcloudio/uni-app'
-import { on } from 'events'
 import { ref } from 'vue'
 
 // 获取屏幕边界到安全区域距离
@@ -57,6 +56,9 @@ const onSubmit = async () => {
     nickname,
     gender,
     birthday,
+    provinceCode: fullLocationCode[0] || undefined,
+    cityCode: fullLocationCode[1] || undefined,
+    countyCode: fullLocationCode[2] || undefined,
   })
   console.log(res.result)
 
@@ -76,10 +78,13 @@ const onBirthDayChange: UniHelper.DatePickerOnChange = (evt) => {
   profile.value.birthday = evt.detail.value
 }
 //选择城市
-const onCityChange: UniHelper.RegionPickerOnChange = (evt) => {
-  console.log(evt.detail.value.slice(0, evt.detail.value.length).join(' '))
-
-  // profile.value.fullLocation =
+let fullLocationCode: [string, string, string] = ['', '', '']
+const onFullLocationChange: UniHelper.RegionPickerOnChange = (evt) => {
+  //修改前端界面
+  profile.value.fullLocation = evt.detail.value.join(' ')
+  //提交后端的地区邮政编码
+  fullLocationCode = evt.detail.code!
+  console.log(fullLocationCode)
 }
 onLoad(() => {
   getMemberProfileData()
@@ -142,7 +147,7 @@ onLoad(() => {
         <view class="form-item">
           <text class="label">城市</text>
           <picker
-            @change="onCityChange"
+            @change="onFullLocationChange"
             class="picker"
             mode="region"
             :value="profile?.fullLocation?.split(' ')"
