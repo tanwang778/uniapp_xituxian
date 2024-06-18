@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import XtxGuess from '@/components/XtxGuess.vue'
 import { useGuessList } from '@/composables'
 import { useMemberStore } from '@/stores'
 // 获取屏幕边界到安全区域距离

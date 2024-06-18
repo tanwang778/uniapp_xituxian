@@ -87,7 +87,7 @@ export type SpecValueItem = {
   available: boolean
   //可选值备注
   desc: string
-}[]
+}
 /**skus信息 */
 export type SkusItem = {
   //sku id
