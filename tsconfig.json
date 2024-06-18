@@ -3,6 +3,7 @@
   "compilerOptions": {
     "allowJs": true,
     "sourceMap": true,
+    "strict": true,
     "baseUrl": ".",
     "paths": {
       "@/*": [
