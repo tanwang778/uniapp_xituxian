@@ -51,7 +51,7 @@ const onAvatarChange = () => {
 }
 //点击保存提交表单
 const onSubmit = async () => {
-  const { nickname, gender, birthday } = profile.value
+  const { nickname, gender, birthday, profession } = profile.value
   const res = await putMemberProfileAPI({
     nickname,
     gender,
@@ -59,6 +59,7 @@ const onSubmit = async () => {
     provinceCode: fullLocationCode[0] || undefined,
     cityCode: fullLocationCode[1] || undefined,
     countyCode: fullLocationCode[2] || undefined,
+    profession,
   })
   console.log(res.result)
 
@@ -158,7 +159,7 @@ onLoad(() => {
         </view>
         <view class="form-item">
           <text class="label">职业</text>
-          <input class="input" type="text" placeholder="请填写职业" :value="profile?.profession" />
+          <input class="input" type="text" placeholder="请填写职业" v-model="profile.profession" />
         </view>
       </view>
       <!-- 提交按钮 -->
