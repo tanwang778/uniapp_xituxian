@@ -11,8 +11,8 @@ const getMemberAddressData = async () => {
   const res = await getMemberAddressAPI()
   addressList.value = res.result
 }
-onShow(() => {
-  getMemberAddressData()
+onShow(async () => {
+  await getMemberAddressData()
 })
 </script>
 
@@ -20,7 +20,7 @@ onShow(() => {
   <view class="viewport">
     <!-- 地址列表 -->
     <scroll-view class="scroll-view" scroll-y>
-      <view v-if="true" class="address">
+      <view v-if="addressList.length" class="address">
         <view class="address-list">
           <!-- 收货地址项 -->
           <view class="item" v-for="item in addressList" :key="item.id">
