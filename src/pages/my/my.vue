@@ -67,9 +67,9 @@ const { guessRef, onScrollToLower } = useGuessList()
         <!-- 订单 -->
         <navigator
           v-for="item in orderTypes"
-          :key="item.type"
           :class="item.icon"
           :url="`/pagesOrder/list/list?type=${item.type}`"
+          :key="item.type"
           class="navigator"
           hover-class="none"
         >
