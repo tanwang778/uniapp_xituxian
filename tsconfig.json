@@ -1,7 +1,6 @@
 {
   "extends": "@vue/tsconfig/tsconfig.json",
   "compilerOptions": {
-    "isolatedModules": true,
     "allowJs": true,
     "sourceMap": true,
     "baseUrl": ".",

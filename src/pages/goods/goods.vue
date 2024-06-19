@@ -10,7 +10,9 @@ import PageSkeleton from './components/PageSkeleton.vue'
 import type {
   SkuPopupInstanceType,
   SkuPopupLocaldata,
+  SkuPopupEvent,
 } from '@/components/vk-data-goods-sku-popup/vk-data-goods-sku-popup'
+import { postMemberCartAPI } from '@/services/cart'
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 //接收页面参数
@@ -97,6 +99,12 @@ const skuPopupRef = ref<SkuPopupInstanceType>()
 const selectArrText = computed(() => {
   return skuPopupRef.value?.selectArr?.join(' ').trim() || '请选择商品规格'
 })
+//加入购物车事件
+const onAddCart = async (evt: SkuPopupEvent) => {
+  await postMemberCartAPI({ skuId: evt._id, count: evt.buy_num })
+  uni.showToast({ title: '添加成功' })
+  isShowSku.value = false
+}
 </script>
 
 <template>
@@ -112,6 +120,7 @@ const selectArrText = computed(() => {
       borderColor: '#27ba9b',
       backgroundColor: '#e9f8f5',
     }"
+    @add-cart="onAddCart"
     ref="skuPopupRef"
   />
   <scroll-view scroll-y class="viewport">
