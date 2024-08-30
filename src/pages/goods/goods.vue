@@ -141,7 +141,6 @@ const onAddCart = async (evt: SkuPopupEvent) => {
             <text class="total">{{ goods?.mainPictures.length }}</text>
           </view>
         </view>
-
         <!-- 商品简介 -->
         <view class="meta">
           <view class="price">
@@ -224,7 +223,7 @@ const onAddCart = async (evt: SkuPopupEvent) => {
       <button class="icons-button" open-type="contact">
         <text class="icon-handset"></text>客服
       </button>
-      <navigator class="icons-button" url="/pages/cart/cart" open-type="switchTab">
+      <navigator class="icons-button" url="/pages/cart/cart2" open-type="navigate">
         <text class="icon-cart"></text>购物车
       </navigator>
     </view>
