@@ -126,6 +126,7 @@ const onAddCart = async (evt: SkuPopupEvent) => {
   <scroll-view scroll-y class="viewport">
     <PageSkeleton v-if="isLoading" />
     <template v-else>
+      <view></view>
       <!-- 基本信息 -->
       <view class="goods">
         <!-- 商品主图 -->

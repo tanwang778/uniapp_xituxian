@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import cartMain from '@/pages/cart/components/cartMain.vue'
+import cartMain from './components/CartMain.vue'
 </script>
 <template><cartMain /></template>
 
-<style scoped></style>
+<style></style>

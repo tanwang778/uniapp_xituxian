@@ -1,6 +1,7 @@
 {
   "extends": "@vue/tsconfig/tsconfig.json",
   "compilerOptions": {
+    "moduleResolution": "Bundler",
     "allowJs": true,
     "sourceMap": true,
     "baseUrl": ".",
@@ -18,13 +19,12 @@
       "miniprogram-api-typings", // 原生微信小程序类型
       "@uni-helper/uni-app-types", // uni-app 组件类型
       "@uni-helper/uni-ui-types" // uni-ui 组件类型  // [!code ++]
-    ]
+    ],
   },
   "vueCompilerOptions": {
     "plugins": [
       "@uni-helper/uni-app-types/volar-plugin"
-    ],
-    "target": "auto",
+    ]
   },
   "include": [
     "src/**/*.ts",
