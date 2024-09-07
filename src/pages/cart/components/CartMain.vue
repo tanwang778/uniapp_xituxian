@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { InputNumberBoxEvent } from '@/components/vk-data-input-number-box/vk-data-input-number-box'
+import { useGuessList } from '@/composables'
 import {
   deleteMemberCartAPI,
   getMemberCartAPI,
@@ -10,7 +11,12 @@ import { useMemberStore } from '@/stores'
 import type { CartItem } from '@/types/cart'
 import { onShow } from '@dcloudio/uni-app'
 import { computed, ref } from 'vue'
-
+// 获取屏幕边界到安全区域距离
+const { safeAreaInsets } = uni.getSystemInfoSync()
+console.log(safeAreaInsets?.bottom)
+defineProps<{
+  isTabBarPage: boolean
+}>()
 //获取会员store
 const memberStore = useMemberStore()
 
@@ -95,10 +101,17 @@ const goToPayment = () => {
   //跳转到结算页
   uni.showToast({ title: '等待完成' })
 }
+//猜你喜欢
+const { guessRef, onScrollToLower } = useGuessList()
 </script>
 
 <template>
-  <scroll-view scroll-y class="scroll-view">
+  <scroll-view
+    :style="{ paddingBottom: isTabBarPage ? '' : safeAreaInsets?.bottom + 'px' }"
+    scroll-y
+    class="scroll-view"
+    @scrolltolower="onScrollToLower"
+  >
     <!-- 已登录: 显示购物车 -->
     <template v-if="memberStore.profile">
       <!-- 购物车列表 -->
@@ -161,7 +174,10 @@ const goToPayment = () => {
         </navigator>
       </view>
       <!-- 吸底工具栏 -->
-      <view class="toolbar">
+      <view
+        class="toolbar"
+        :style="{ paddingBottom: isTabBarPage ? '' : safeAreaInsets?.bottom + 'px' }"
+      >
         <text @tap="onChangeSelectedAll" class="all" :class="{ checked: isSelectedAll }">全选</text>
         <text class="text">合计:</text>
         <text class="amount">{{ selectedCartListMoney }}</text>
