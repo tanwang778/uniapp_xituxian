@@ -6,8 +6,8 @@ import HotPanel from './components/HotPanel.vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 import type { BannerItem, CategoryItem, HotItem } from '@/types/home'
-import type { XtxGuessInstance } from '@/types/component'
 import PageSkeleton from './components/PageSkeleton.vue'
+import { useGuessList } from '@/composables'
 //获取轮播图数据
 const bannerList = ref<BannerItem[]>([])
 const getHomeBannerData = async () => {
@@ -35,12 +35,9 @@ onLoad(async () => {
   await Promise.all([getHomeBannerData(), getHomeCategoryData(), getHomeHotData()])
   isLoading.value = false
 })
-//获取猜你喜欢组件实例
-const guessRef = ref<XtxGuessInstance>()
-//滚动触底
-const onScrollToLower = () => {
-  guessRef.value?.getMore()
-}
+//猜你喜欢组合式函数调用
+const { guessRef, onScrollToLower } = useGuessList()
+//当前下拉刷新状态
 const isTriggered = ref(false)
 //下拉刷新
 const onRefresherRefresh = async () => {
